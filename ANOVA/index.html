@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANOVA Calculator | Agricultural Experimental Designs</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>ANOVA Calculator</h1>
+        <p class="subtitle">
+          For Agricultural Experimental Designs (CRD, RBD, LSD)
+        </p>
+      </header>
+
+      <div class="design-container">
+        <div class="input-section">
+          <div class="section-title">
+            <i class="fas fa-edit"></i>
+            <h2>Input Data</h2>
+          </div>
+
+          <div class="input-card">
+            <div class="design-type-selector">
+              <button class="design-btn active" data-design="CRD">
+                <i class="fas fa-random"></i> CRD
+              </button>
+              <button class="design-btn" data-design="RBD">
+                <i class="fas fa-th-large"></i> RBD
+              </button>
+              <button class="design-btn" data-design="LSD">
+                <i class="fas fa-border-all"></i> LSD
+              </button>
+            </div>
+
+            <div class="example-buttons">
+              <button class="example-btn" data-example="CRD">
+                Load CRD Example
+              </button>
+              <button class="example-btn" data-example="RBD">
+                Load RBD Example
+              </button>
+              <button class="example-btn" data-example="LSD">
+                Load LSD Example
+              </button>
+            </div>
+
+            <textarea
+              id="data-input"
+              placeholder="Enter your data here...&#10;Example for CRD/RBD:&#10;12.5 13.2 14.1&#10;11.8 12.4 13.0&#10;14.2 14.8 15.3&#10;&#10;Example for LSD:&#10;10.2 11.5 12.1&#10;11.8 12.3 10.5&#10;12.4 10.8 11.2"
+            ></textarea>
+
+            <div class="input-format">
+              <p>
+                <strong>Format:</strong> Each row represents a
+                treatment/genotype. Values can be separated by spaces, commas,
+                or tabs.
+              </p>
+              <p id="design-requirements">
+                For CRD/RBD: Each treatment must have equal replications.
+              </p>
+            </div>
+
+            <button id="analyze-btn" class="btn">
+              <i class="fas fa-calculator"></i> Analyze Data
+            </button>
+          </div>
+
+          <div id="error-message" class="error-message hidden"></div>
+        </div>
+
+        <div class="output-section">
+          <div class="section-title">
+            <i class="fas fa-chart-bar"></i>
+            <h2>Results</h2>
+          </div>
+
+          <div id="data-info" class="output-card hidden">
+            <h3>Experimental Design Information</h3>
+            <div class="data-info-grid">
+              <div class="info-card">
+                <h3>Design Type</h3>
+                <p id="design-type-output">CRD</p>
+              </div>
+              <div class="info-card">
+                <h3>Genotypes</h3>
+                <p id="genotype-count">0</p>
+              </div>
+              <div class="info-card">
+                <h3>Replications</h3>
+                <p id="replication-count">0</p>
+              </div>
+              <div class="info-card">
+                <h3>Total Observations</h3>
+                <p id="total-observations">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="descriptive-stats" class="output-card hidden">
+            <h3>Descriptive Statistics</h3>
+            <table id="stats-table">
+              <thead>
+                <tr>
+                  <th>Treatment</th>
+                  <th>Mean</th>
+                  <th>Std. Dev.</th>
+                  <th>Min</th>
+                  <th>Max</th>
+                  <th>Range</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="anova-results" class="output-card hidden">
+            <h3>ANOVA Table</h3>
+            <table id="anova-table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>df</th>
+                  <th>SS</th>
+                  <th>MS</th>
+                  <th>F-value</th>
+                  <th>p-value</th>
+                  <th>Sig.</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="post-hoc-results" class="output-card hidden">
+            <h3>Post-Hoc Analysis (Tukey's HSD)</h3>
+            <table id="posthoc-table">
+              <thead>
+                <tr>
+                  <th>Comparison</th>
+                  <th>Difference</th>
+                  <th>Std. Error</th>
+                  <th>q-value</th>
+                  <th>p-value</th>
+                  <th>Sig.</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="export-buttons hidden" id="export-section">
+            <button class="btn btn-secondary export-btn" id="export-csv">
+              <i class="fas fa-file-csv"></i> Export to CSV
+            </button>
+            <button class="btn btn-secondary export-btn" id="export-json">
+              <i class="fas fa-file-code"></i> Export to JSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-text">
+        <h3>How to use this calculator:</h3>
+        <ul>
+          <li>
+            <strong>CRD (Completely Randomized Design):</strong> Each genotype
+            is randomly assigned to experimental units.
+          </li>
+          <li>
+            <strong>RBD (Randomized Block Design):</strong> Genotypes are
+            grouped into blocks to control for environmental variation.
+          </li>
+          <li>
+            <strong>LSD (Latin Square Design):</strong> Controls for two sources
+            of variation (rows and columns) with equal numbers of genotypes and
+            replications.
+          </li>
+          <li>
+            Enter your data with genotypes as rows and replications as columns.
+          </li>
+          <li>
+            For LSD, ensure you have equal numbers of genotypes and replications
+            (square design).
+          </li>
+          <li>
+            Click on example buttons to load sample data for each design type.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.1/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
