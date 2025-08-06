@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const anovaResults = document.getElementById("anova-results");
   const postHocResults = document.getElementById("post-hoc-results");
   const exportSection = document.getElementById("export-section");
+  const chartsContainer = document.getElementById("charts-container");
   const designTypeOutput = document.getElementById("design-type-output");
   const genotypeCount = document.getElementById("genotype-count");
   const replicationCount = document.getElementById("replication-count");
@@ -23,9 +24,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const exportCsvBtn = document.getElementById("export-csv");
   const exportJsonBtn = document.getElementById("export-json");
 
+  // Chart elements
+  const meansChartCtx = document.getElementById("meansChart").getContext("2d");
+  const significanceChartCtx = document
+    .getElementById("significanceChart")
+    .getContext("2d");
+  const variabilityChartCtx = document
+    .getElementById("variabilityChart")
+    .getContext("2d");
+  const effectSizeChartCtx = document
+    .getElementById("effectSizeChart")
+    .getContext("2d");
+
+  // Chart instances
+  let meansChart, significanceChart, variabilityChart, effectSizeChart;
+
   // Current design type (default: CRD)
   let currentDesign = "CRD";
   let currentResult = null;
+  let currentData = null;
+  let postHocComparisons = null;
 
   // Example data sets
   const examples = {
@@ -79,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     anovaResults.classList.add("hidden");
     postHocResults.classList.add("hidden");
     exportSection.classList.add("hidden");
+    chartsContainer.classList.add("hidden");
     errorMessage.classList.add("hidden");
 
     // Show loading state
@@ -92,18 +111,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const rawData = dataInput.value.trim();
         if (!rawData) throw new Error("Please enter data to analyze");
 
-        const data = parseData(rawData);
-        const result = performANOVA(data, currentDesign);
+        currentData = parseData(rawData);
+        const result = performANOVA(currentData, currentDesign);
 
         currentResult = result; // Store for export
 
         displayDataInfo(result);
-        displayDescriptiveStats(data, result);
+        displayDescriptiveStats(currentData, result);
         displayANOVATable(result);
+        displayCharts(currentData, result);
 
         // Only show post-hoc if genotype effect is significant
         if (result.pValueGenotype < 0.05) {
-          performPostHocTest(data, result);
+          performPostHocTest(currentData, result);
         }
 
         exportSection.classList.remove("hidden");
@@ -414,7 +434,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const HSD = qCritical * SE;
 
     // Generate all pairwise comparisons
-    const comparisons = [];
+    postHocComparisons = [];
 
     for (let i = 0; i < genotypes - 1; i++) {
       for (let j = i + 1; j < genotypes; j++) {
@@ -422,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const qValue = Math.abs(diff) / SE;
         const pValue = 1 - tukeyCDF(qValue, genotypes, result.dfError);
 
-        comparisons.push({
+        postHocComparisons.push({
           comparison: `T${i + 1} vs T${j + 1}`,
           difference: diff,
           stdError: SE,
@@ -434,10 +454,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Sort by absolute difference (largest first)
-    comparisons.sort((a, b) => Math.abs(b.difference) - Math.abs(a.difference));
+    postHocComparisons.sort(
+      (a, b) => Math.abs(b.difference) - Math.abs(a.difference)
+    );
 
     // Display results
-    displayPostHocResults(comparisons);
+    displayPostHocResults(postHocComparisons);
+
+    // Update effect size chart
+    updateEffectSizeChart();
   }
 
   // Tukey's HSD critical value approximation
@@ -634,6 +659,238 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     postHocResults.classList.remove("hidden");
+  }
+
+  function displayCharts(data, result) {
+    // Destroy previous charts if they exist
+    if (meansChart) meansChart.destroy();
+    if (significanceChart) significanceChart.destroy();
+    if (variabilityChart) variabilityChart.destroy();
+    if (effectSizeChart) effectSizeChart.destroy();
+
+    // Prepare data for charts
+    const treatmentLabels = result.genotypeMeans.map(
+      (_, i) => `Treatment ${i + 1}`
+    );
+    const treatmentMeans = result.genotypeMeans;
+    const treatmentStdDevs = result.genotypeMeans.map((mean, i) => {
+      const squaredDiffs = data[i].map((val) => Math.pow(val - mean, 2));
+      return Math.sqrt(math.sum(squaredDiffs) / (data[i].length - 1));
+    });
+
+    // 1. Treatment Means Comparison Chart
+    meansChart = new Chart(meansChartCtx, {
+      type: "bar",
+      data: {
+        labels: treatmentLabels,
+        datasets: [
+          {
+            label: "Mean Value",
+            data: treatmentMeans,
+            backgroundColor: "rgba(54, 162, 235, 0.7)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Mean Value",
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "Comparison of Treatment Means",
+          },
+        },
+      },
+    });
+
+    // 2. ANOVA Significance Chart
+    const sigData = [
+      result.pValueGenotype,
+      result.design !== "CRD" ? result.pValueReplication : null,
+    ].filter((val) => val !== null);
+
+    const sigLabels = [
+      "Treatment Effect",
+      result.design === "LSD" ? "Row+Column Effect" : "Block Effect",
+    ].filter((_, i) => sigData[i] !== undefined);
+
+    significanceChart = new Chart(significanceChartCtx, {
+      type: "bar",
+      data: {
+        labels: sigLabels,
+        datasets: [
+          {
+            label: "p-value",
+            data: sigData,
+            backgroundColor: sigData.map((p) =>
+              p < 0.05 ? "rgba(255, 99, 132, 0.7)" : "rgba(75, 192, 192, 0.7)"
+            ),
+            borderColor: sigData.map((p) =>
+              p < 0.05 ? "rgba(255, 99, 132, 1)" : "rgba(75, 192, 192, 1)"
+            ),
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1,
+            title: {
+              display: true,
+              text: "p-value",
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "ANOVA Significance Levels",
+          },
+          annotation: {
+            annotations: {
+              line1: {
+                type: "line",
+                yMin: 0.05,
+                yMax: 0.05,
+                borderColor: "rgb(255, 0, 0)",
+                borderWidth: 2,
+                borderDash: [6, 6],
+                label: {
+                  content: "Significance Threshold (0.05)",
+                  enabled: true,
+                  position: "right",
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 3. Treatment Variability Chart
+    variabilityChart = new Chart(variabilityChartCtx, {
+      type: "line",
+      data: {
+        labels: treatmentLabels,
+        datasets: [
+          {
+            label: "Mean ± SD",
+            data: treatmentMeans,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: true,
+          },
+          {
+            label: "Standard Deviation",
+            data: treatmentStdDevs,
+            backgroundColor: "rgba(255, 159, 64, 0.2)",
+            borderColor: "rgba(255, 159, 64, 1)",
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Value",
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "Treatment Means and Variability",
+          },
+        },
+      },
+    });
+
+    // 4. Effect Size Chart (will be updated if post-hoc is performed)
+    effectSizeChart = new Chart(effectSizeChartCtx, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Mean Difference",
+            data: [],
+            backgroundColor: [],
+            borderColor: [],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: "y",
+        scales: {
+          x: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Mean Difference",
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "Top Treatment Comparisons",
+          },
+        },
+      },
+    });
+
+    // Show charts container
+    chartsContainer.classList.remove("hidden");
+  }
+
+  function updateEffectSizeChart() {
+    if (!postHocComparisons || postHocComparisons.length === 0) return;
+
+    const comparisons = postHocComparisons
+      .sort((a, b) => Math.abs(b.difference) - Math.abs(a.difference))
+      .slice(0, 10); // Show top 10 comparisons
+
+    effectSizeChart.data.labels = comparisons.map((c) => c.comparison);
+    effectSizeChart.data.datasets[0].data = comparisons.map(
+      (c) => c.difference
+    );
+    effectSizeChart.data.datasets[0].backgroundColor = comparisons.map((c) =>
+      c.significant ? "rgba(255, 99, 132, 0.7)" : "rgba(54, 162, 235, 0.7)"
+    );
+    effectSizeChart.data.datasets[0].borderColor = comparisons.map((c) =>
+      c.significant ? "rgba(255, 99, 132, 1)" : "rgba(54, 162, 235, 1)"
+    );
+    effectSizeChart.update();
   }
 
   function addANOVATableRow(source, df, SS, MS, F, pValue) {

@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -166,6 +167,46 @@
             <button class="btn btn-secondary export-btn" id="export-json">
               <i class="fas fa-file-code"></i> Export to JSON
             </button>
+          </div>
+
+          <!-- Add new chart containers -->
+          <div id="charts-container" class="hidden">
+            <div class="section-title">
+              <i class="fas fa-chart-line"></i>
+              <h2>Visualizations</h2>
+            </div>
+
+            <div class="charts-row">
+              <div class="chart-card">
+                <h3 class="chart-title">Treatment Means Comparison</h3>
+                <div class="chart-container">
+                  <canvas id="meansChart"></canvas>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <h3 class="chart-title">ANOVA Significance</h3>
+                <div class="chart-container">
+                  <canvas id="significanceChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-row">
+              <div class="chart-card">
+                <h3 class="chart-title">Treatment Variability</h3>
+                <div class="chart-container">
+                  <canvas id="variabilityChart"></canvas>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <h3 class="chart-title">Effect Sizes</h3>
+                <div class="chart-container">
+                  <canvas id="effectSizeChart"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
