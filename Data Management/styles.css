@@ -1,0 +1,524 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --dark-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --text-color: #333;
+    --text-light: #7f8c8d;
+    --border-color: #ddd;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+header {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+header h1 {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.language-selector select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--light-color);
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: white;
+    padding: 1rem;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+.content-area {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.file-upload-section, .history-section {
+    margin-bottom: 1.5rem;
+}
+
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.upload-area i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.upload-area p {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.browse-btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.browse-btn:hover {
+    background-color: #2980b9;
+}
+
+#fileInput {
+    display: none;
+}
+
+.file-info {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.history-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.history-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.history-controls button {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+#undoBtn {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+#redoBtn {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+#clearHistoryBtn {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-content {
+    display: none;
+    padding: 0.5rem;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.operation-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.operation-section h3 {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.operation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.options-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.action-btn:hover {
+    background-color: #2980b9;
+}
+
+.action-btn.secondary {
+    background-color: var(--light-color);
+    color: var(--text-color);
+}
+
+.action-btn.secondary:hover {
+    background-color: #d5dbdb;
+}
+
+select, input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+select[multiple] {
+    min-height: 100px;
+}
+
+.results-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    padding: 1rem;
+    background-color: var(--light-color);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.matrix-container {
+    overflow-x: auto;
+}
+
+.correlation-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.correlation-table th, .correlation-table td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.correlation-table th {
+    background-color: var(--light-color);
+    position: sticky;
+    top: 0;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 1rem;
+}
+
+.frequency-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.frequency-table th, .frequency-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+.frequency-table th {
+    background-color: var(--light-color);
+}
+
+.data-preview-section {
+    margin-top: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-controls button {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.table-container {
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+#dataTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#dataTable th, #dataTable td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+#dataTable th {
+    background-color: var(--light-color);
+    position: sticky;
+    top: 0;
+}
+
+#dataTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#dataTable tr:hover {
+    background-color: #f1f1f1;
+}
+
+.footer {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.export-section h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.export-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.export-btn {
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.export-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.system-info {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--light-color);
+}
+
+/* Drag and drop styles */
+#dropZone.highlight {
+    border-color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .operation-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .export-options {
+        flex-wrap: wrap;
+    }
+}
+
+/* Animation for operations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.operation-section {
+    animation: fadeIn 0.3s ease-out;
+}
