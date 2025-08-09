@@ -1,131 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Management System</title>
-    <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Data Management System</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+  </head>
+  <body>
     <div class="container">
-        <h1>Data Management System</h1>
-        
-        <div class="upload-section">
-            <h2>1. Upload Data</h2>
-            <input type="file" id="fileInput" accept=".csv,.xlsx,.json">
+      <h1>Advanced Data Management System</h1>
+
+      <div class="upload-section">
+        <h2>1. Upload Data</h2>
+        <div class="upload-options">
+          <div id="dropzone" class="dropzone">
+            <div class="dz-message">
+              Drop files here or click to upload<br />
+              <small>(CSV, Excel, JSON)</small>
+            </div>
+          </div>
+          <div class="file-options">
             <div class="file-format">
-                <label>File Format:</label>
-                <select id="fileFormat">
-                    <option value="auto">Auto Detect</option>
-                    <option value="csv">CSV</option>
-                    <option value="xlsx">Excel</option>
-                    <option value="json">JSON</option>
-                </select>
-            </div>
-            <button id="loadDataBtn">Load Data</button>
-        </div>
-
-        <div class="data-section">
-            <h2>2. Data Preview</h2>
-            <div id="dataPreview"></div>
-        </div>
-
-        <div class="operations-section">
-            <h2>3. Data Operations</h2>
-            
-            <div class="operation-group">
-                <h3>Clean Empty Cells</h3>
-                <div class="operation-options">
-                    <label><input type="radio" name="emptyCells" value="delete" checked> Delete Empty Cells</label>
-                    <label><input type="radio" name="emptyCells" value="fill"> Fill Empty Cells</label>
-                    <div id="fillOptions" style="display: none;">
-                        <label>Fill Value: <input type="text" id="fillValue" placeholder="Enter value"></label>
-                        <button id="fillSpecificBtn">Fill Specific Columns</button>
-                        <div id="specificFillOptions" style="display: none; margin-top: 10px;">
-                            <textarea id="columnFillValues" placeholder="Format: {'Column1': 'Value1', 'Column2': 'Value2'}"></textarea>
-                            <button id="applySpecificFill">Apply</button>
-                        </div>
-                    </div>
-                    <button id="applyEmptyCells">Apply</button>
-                </div>
-            </div>
-
-            <div class="operation-group">
-                <h3>Statistical Calculations</h3>
-                <button id="calculateStats">Calculate Statistics</button>
-                <div id="statsResults"></div>
-            </div>
-
-            <div class="operation-group">
-                <h3>Fix Wrong Format Data</h3>
-                <div class="operation-options">
-                    <label>Column: <select id="formatColumn"></select></label>
-                    <label>Convert to: 
-                        <select id="convertTo">
-                            <option value="string">Text</option>
-                            <option value="number">Number</option>
-                            <option value="date">Date</option>
-                            <option value="boolean">Boolean</option>
-                        </select>
-                    </label>
-                    <button id="applyFormat">Apply</button>
-                </div>
-            </div>
-
-            <div class="operation-group">
-                <h3>Fix Wrong Data</h3>
-                <div class="operation-options">
-                    <label>Column: <select id="wrongDataColumn"></select></label>
-                    <label>Condition: 
-                        <select id="wrongDataCondition">
-                            <option value="greater">Greater Than</option>
-                            <option value="less">Less Than</option>
-                            <option value="equal">Equal To</option>
-                            <option value="contains">Contains</option>
-                        </select>
-                    </label>
-                    <label>Value: <input type="text" id="wrongDataValue"></label>
-                    <div>
-                        <label>Action: 
-                            <select id="wrongDataAction">
-                                <option value="replace">Replace With</option>
-                                <option value="delete">Delete Row</option>
-                            </select>
-                        </label>
-                        <input type="text" id="wrongDataReplaceValue" placeholder="Replacement value">
-                    </div>
-                    <button id="applyWrongDataFix">Apply</button>
-                </div>
-            </div>
-
-            <div class="operation-group">
-                <h3>Remove Duplicates</h3>
-                <button id="removeDuplicates">Remove Duplicate Rows</button>
-                <div id="duplicatesInfo"></div>
-            </div>
-
-            <div class="operation-group">
-                <h3>Calculate Correlations</h3>
-                <button id="calculateCorrelations">Calculate Column Correlations</button>
-                <div id="correlationResults"></div>
-                <canvas id="correlationChart" width="400" height="300"></canvas>
-            </div>
-        </div>
-
-        <div class="download-section">
-            <h2>4. Download Processed Data</h2>
-            <select id="downloadFormat">
+              <label>File Format:</label>
+              <select id="fileFormat">
+                <option value="auto">Auto Detect</option>
                 <option value="csv">CSV</option>
                 <option value="xlsx">Excel</option>
                 <option value="json">JSON</option>
-            </select>
-            <button id="downloadBtn">Download</button>
+              </select>
+            </div>
+            <div class="merge-option">
+              <label
+                ><input type="checkbox" id="mergeFiles" /> Merge multiple
+                files</label
+              >
+            </div>
+            <div class="csv-options" style="display: none">
+              <label>CSV Delimiter:</label>
+              <select id="csvDelimiter">
+                <option value="auto">Auto Detect</option>
+                <option value=",">Comma (,)</option>
+                <option value="\t">Tab (\t)</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="|">Pipe (|)</option>
+              </select>
+            </div>
+          </div>
         </div>
+        <button id="loadDataBtn">Load Data</button>
+      </div>
+
+      <div class="data-section">
+        <h2>2. Data Preview</h2>
+        <div id="dataPreview"></div>
+      </div>
+
+      <div class="operations-section">
+        <h2>3. Data Operations</h2>
+
+        <div class="operation-group">
+          <h3>Basic Cleaning</h3>
+          <div class="operation-options">
+            <h4>Clean Empty Cells</h4>
+            <label
+              ><input type="radio" name="emptyCells" value="delete" checked />
+              Delete Empty Cells</label
+            >
+            <label
+              ><input type="radio" name="emptyCells" value="fill" /> Fill Empty
+              Cells</label
+            >
+            <div id="fillOptions" style="display: none">
+              <label
+                >Fill Value:
+                <input type="text" id="fillValue" placeholder="Enter value"
+              /></label>
+              <button id="fillSpecificBtn">Fill Specific Columns</button>
+              <div
+                id="specificFillOptions"
+                style="display: none; margin-top: 10px"
+              >
+                <textarea
+                  id="columnFillValues"
+                  placeholder="Format: {'Column1': 'Value1', 'Column2': 'Value2'}"
+                ></textarea>
+                <button id="applySpecificFill">Apply</button>
+              </div>
+            </div>
+            <button id="applyEmptyCells">Apply</button>
+
+            <h4 style="margin-top: 15px">Fix Wrong Format Data</h4>
+            <div class="operation-options">
+              <label
+                >Column:
+                <select id="formatColumn"></select
+              ></label>
+              <label
+                >Convert to:
+                <select id="convertTo">
+                  <option value="string">Text</option>
+                  <option value="number">Number</option>
+                  <option value="date">Date</option>
+                  <option value="boolean">Boolean</option>
+                </select>
+              </label>
+              <button id="applyFormat">Apply</button>
+            </div>
+
+            <h4 style="margin-top: 15px">Fix Wrong Data</h4>
+            <div class="operation-options">
+              <label
+                >Column:
+                <select id="wrongDataColumn"></select
+              ></label>
+              <label
+                >Condition:
+                <select id="wrongDataCondition">
+                  <option value="greater">Greater Than</option>
+                  <option value="less">Less Than</option>
+                  <option value="equal">Equal To</option>
+                  <option value="contains">Contains</option>
+                </select>
+              </label>
+              <label>Value: <input type="text" id="wrongDataValue" /></label>
+              <div>
+                <label
+                  >Action:
+                  <select id="wrongDataAction">
+                    <option value="replace">Replace With</option>
+                    <option value="delete">Delete Row</option>
+                  </select>
+                </label>
+                <input
+                  type="text"
+                  id="wrongDataReplaceValue"
+                  placeholder="Replacement value"
+                />
+              </div>
+              <button id="applyWrongDataFix">Apply</button>
+            </div>
+
+            <h4 style="margin-top: 15px">Remove Duplicates</h4>
+            <button id="removeDuplicates">Remove Duplicate Rows</button>
+            <div id="duplicatesInfo"></div>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Advanced Cleaning</h3>
+          <div class="operation-options">
+            <h4>Missing Data Handling</h4>
+            <label
+              >Column:
+              <select id="naHandlingColumn"></select
+            ></label>
+            <label
+              >Method:
+              <select id="naHandlingMethod">
+                <option value="mean">Fill with Mean</option>
+                <option value="median">Fill with Median</option>
+                <option value="mode">Fill with Mode</option>
+                <option value="interpolate">Interpolate</option>
+                <option value="timeInterpolate">Time-based Interpolate</option>
+              </select>
+            </label>
+            <button id="applyNAHandling">Apply</button>
+
+            <h4 style="margin-top: 15px">Normalization & Scaling</h4>
+            <label
+              >Column:
+              <select id="scalingColumn"></select
+            ></label>
+            <label
+              >Method:
+              <select id="scalingMethod">
+                <option value="minmax">Min-Max Scaling (0-1)</option>
+                <option value="zscore">Z-Score Standardization</option>
+              </select>
+            </label>
+            <button id="applyScaling">Apply</button>
+
+            <h4 style="margin-top: 15px">Text Processing</h4>
+            <label
+              >Column:
+              <select id="textProcessingColumn"></select
+            ></label>
+            <label
+              >Operation:
+              <select id="textProcessingOperation">
+                <option value="trim">Trim Spaces</option>
+                <option value="removeSpecial">Remove Special Characters</option>
+                <option value="uppercase">Convert to Uppercase</option>
+                <option value="lowercase">Convert to Lowercase</option>
+                <option value="titlecase">Convert to Title Case</option>
+              </select>
+            </label>
+            <button id="applyTextProcessing">Apply</button>
+
+            <h4 style="margin-top: 15px">Date/Time Processing</h4>
+            <label
+              >Column:
+              <select id="dateColumn"></select
+            ></label>
+            <label
+              >Operation:
+              <select id="dateOperation">
+                <option value="autoDetect">Auto-detect Format</option>
+                <option value="extractYear">Extract Year</option>
+                <option value="extractMonth">Extract Month</option>
+                <option value="extractDay">Extract Day</option>
+                <option value="extractWeekday">Extract Weekday</option>
+              </select>
+            </label>
+            <button id="applyDateProcessing">Apply</button>
+            <div id="dateFormatInfo" style="margin-top: 10px"></div>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Column Operations</h3>
+          <div class="operation-options">
+            <label
+              >Operation:
+              <select id="columnOperation">
+                <option value="split">Split Column</option>
+                <option value="merge">Merge Columns</option>
+              </select>
+            </label>
+            <div id="splitOptions">
+              <label
+                >Column to Split:
+                <select id="splitColumn"></select
+              ></label>
+              <label
+                >Separator:
+                <input
+                  type="text"
+                  id="splitSeparator"
+                  placeholder="e.g., comma, space"
+              /></label>
+              <label
+                >New Column Names:
+                <input
+                  type="text"
+                  id="newColumnNames"
+                  placeholder="comma-separated names"
+              /></label>
+            </div>
+            <div id="mergeOptions" style="display: none">
+              <label
+                >Columns to Merge:
+                <select id="mergeColumns" multiple></select
+              ></label>
+              <label
+                >Separator:
+                <input
+                  type="text"
+                  id="mergeSeparator"
+                  placeholder="e.g., space, hyphen"
+              /></label>
+              <label
+                >New Column Name:
+                <input
+                  type="text"
+                  id="mergedColumnName"
+                  placeholder="Name for merged column"
+              /></label>
+            </div>
+            <button id="applyColumnOperation">Apply</button>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Regex Cleaning</h3>
+          <div class="operation-options">
+            <label
+              >Column:
+              <select id="regexColumn"></select
+            ></label>
+            <label
+              >Find Pattern:
+              <input
+                type="text"
+                id="regexPattern"
+                placeholder="Regular expression"
+            /></label>
+            <label
+              >Replace With:
+              <input
+                type="text"
+                id="regexReplacement"
+                placeholder="Replacement text"
+            /></label>
+            <div class="regex-examples">
+              Examples: <br />
+              - Remove numbers: <code>\d+</code> → ""<br />
+              - Extract emails:
+              <code>([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)</code>
+            </div>
+            <button id="applyRegex">Apply</button>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Statistical Analysis</h3>
+          <button id="calculateStats">Calculate Statistics</button>
+          <div id="statsResults"></div>
+
+          <h4 style="margin-top: 15px">Correlation Analysis</h4>
+          <button id="calculateCorrelations">
+            Calculate Column Correlations
+          </button>
+          <div id="correlationResults"></div>
+          <canvas id="correlationChart" width="400" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="download-section">
+        <h2>4. Download Processed Data</h2>
+        <div class="download-options">
+          <select id="downloadFormat">
+            <option value="csv">CSV</option>
+            <option value="xlsx">Excel</option>
+            <option value="json">JSON</option>
+          </select>
+          <div id="columnSelection" style="display: none; margin-top: 10px">
+            <label>Select Columns to Export:</label>
+            <div id="exportColumnsList"></div>
+          </div>
+          <button id="downloadBtn">Download</button>
+        </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

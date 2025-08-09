@@ -109,3 +109,117 @@ th {
     margin-top: 20px;
     max-width: 600px;
 }
+
+/* Dropzone styles */
+.dropzone {
+    border: 2px dashed #3498db;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropzone .dz-message {
+    color: #666;
+    font-size: 16px;
+}
+
+.dropzone .dz-preview {
+    margin: 10px;
+}
+
+.dropzone .dz-preview .dz-image {
+    width: 80px;
+    height: 80px;
+}
+
+.dropzone .dz-success-mark, .dropzone .dz-error-mark {
+    display: none;
+}
+
+/* Upload options */
+.upload-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.file-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.file-format, .merge-option, .csv-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Column selection for export */
+#columnSelection {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#exportColumnsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+#exportColumnsList label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+#exportColumnsList input[type="checkbox"] {
+    margin: 0;
+}
+
+/* Advanced Operation Styles */
+.operation-options select[multiple] {
+    height: auto;
+    min-height: 80px;
+}
+
+.date-format-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.regex-examples {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Column operation options */
+#splitOptions, #mergeOptions {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+/* Stats table enhancements */
+.stats-table th, .stats-table td {
+    padding: 8px 12px;
+}
+
+.stats-table tr:hover {
+    background-color: #f5f5f5;
+}
