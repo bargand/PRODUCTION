@@ -1,0 +1,432 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+h1 {
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.upload-section, .data-section, .operations-section {
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #e1e5eb;
+}
+
+.upload-section {
+    text-align: center;
+    border: 2px dashed #bdc3c7;
+    transition: all 0.3s;
+}
+
+.upload-section.drag-over {
+    border-color: #3498db;
+    background-color: #eaf2f8;
+}
+
+.upload-options {
+    margin: 20px 0;
+}
+
+#fileInput {
+    display: none;
+}
+
+.file-info {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e8f4fc;
+    border-radius: 5px;
+    display: none;
+}
+
+.operation-group {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.operation-options {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f1f5f9;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 8px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px;
+}
+
+label {
+    display: block;
+    margin: 8px 0;
+    font-weight: 500;
+}
+
+#dataPreview {
+    overflow-x: auto;
+    margin-top: 15px;
+    border: 1px solid #e1e5eb;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+table, th, td {
+    border: 1px solid #e1e5eb;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f1f5f9;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #eaf2f8;
+}
+
+#duplicatesResult {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fff8e1;
+    border-radius: 5px;
+    border: 1px solid #ffe0b2;
+}
+
+.fuzzy-match {
+    background-color: #fff3e0;
+}
+
+.exact-match {
+    background-color: #ffebee;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f1f5f9;
+    border-radius: 5px;
+}
+
+.rows-per-page select {
+    width: auto;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+.page-navigation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-navigation button {
+    padding: 5px 10px;
+    min-width: 80px;
+}
+
+#pageInfo {
+    padding: 0 10px;
+    font-weight: 500;
+}
+
+.duplicate-row {
+    background-color: #ffebee !important;
+}
+
+/* Empty cell cleaning styles */
+#fillOptions {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#columnFillValues {
+    width: 100%;
+    min-height: 60px;
+    font-family: monospace;
+}
+
+.operation-options label {
+    margin: 5px 0;
+    display: block;
+}
+
+.operation-options select, 
+.operation-options input[type="text"] {
+    margin-left: 5px;
+    padding: 5px;
+}
+
+/* Multiple values fill styles */
+.column-value-pair {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.column-value-pair select {
+    flex: 1;
+    padding: 5px;
+}
+
+.column-value-pair input {
+    flex: 1;
+    padding: 5px;
+}
+
+.remove-pair-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+}
+
+.remove-pair-btn:hover {
+    background: #cc0000;
+}
+
+#addMoreColumnsBtn {
+    background: #4CAF50;
+    padding: 5px 10px;
+}
+
+#addMoreColumnsBtn:hover {
+    background: #3e8e41;
+}
+
+/* Format handling styles */
+#dateFormatOptions {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#formatResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+}
+
+/* Text processing styles */
+.text-processing-options {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.text-processing-options label {
+    display: block;
+    margin: 8px 0;
+}
+
+#textProcessingResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e3f2fd;
+    border-radius: 5px;
+}
+
+/* Column operations styles */
+#splitOptions, #mergeOptions {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#mergeColumns {
+    width: 100%;
+    padding: 5px;
+    min-height: 100px;
+}
+
+#columnOpResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff8e1;
+    border-radius: 5px;
+}
+
+select[multiple] option {
+    padding: 5px;
+}
+
+select[multiple] option:hover {
+    background-color: #e3f2fd;
+}
+
+/* Column operations styles */
+.new-column-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.new-column-input label {
+    flex-grow: 1;
+}
+
+.remove-column-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 0;
+    line-height: 25px;
+}
+
+.remove-column-btn:hover {
+    background: #cc0000;
+}
+
+#addMoreSplitColumnsBtn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#addMoreSplitColumnsBtn:hover {
+    background: #3e8e41;
+}
+
+/* Column operations styles */
+#splitOptions, #mergeOptions {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#mergeColumns {
+    width: 100%;
+    padding: 5px;
+    min-height: 100px;
+}
+
+#columnOpResult {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff8e1;
+    border-radius: 5px;
+}
+
+select[multiple] option {
+    padding: 5px;
+}
+
+select[multiple] option:hover {
+    background-color: #e3f2fd;
+}
+
+/* Split column styles */
+#newColumnsContainer {
+    margin: 10px 0;
+}
+
+.new-column-input {
+    margin-bottom: 8px;
+}
+
+.new-column-input input {
+    width: 200px;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+#addMoreColumnsBtn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#addMoreColumnsBtn:hover {
+    background: #3e8e41;
+}

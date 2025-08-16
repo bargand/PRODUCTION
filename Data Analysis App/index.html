@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Analysis System</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Data Analysis System</h1>
+
+      <div class="upload-section" id="dropZone">
+        <h2>1. Upload Data</h2>
+        <div class="upload-options">
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" />
+          <p>or drag & drop files here</p>
+        </div>
+        <div class="file-info" id="fileInfo"></div>
+      </div>
+
+      <div class="data-section">
+        <h2>2. Data Preview</h2>
+        <div id="dataPreview"></div>
+        <div class="pagination-controls">
+          <div class="rows-per-page">
+            <label
+              >Rows per page:
+              <select id="rowsPerPage">
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="0">All</option>
+              </select>
+            </label>
+          </div>
+          <div class="page-navigation">
+            <button id="firstPage">First</button>
+            <button id="prevPage">Previous</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button id="nextPage">Next</button>
+            <button id="lastPage">Last</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="operations-section">
+        <h2>3. Data Cleaning</h2>
+
+        <div class="operation-group">
+          <h3>Remove Duplicates</h3>
+          <div class="operation-options">
+            <button id="removeDuplicatesBtn">Remove Duplicates</button>
+            <div id="duplicatesResult"></div>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Clean Empty Cells</h3>
+          <div class="operation-options">
+            <label>
+              <input type="radio" name="emptyAction" value="delete" checked />
+              Delete Rows with Empty Cells
+            </label>
+            <label>
+              <input type="radio" name="emptyAction" value="fill" /> Fill Empty
+              Cells
+            </label>
+
+            <div id="fillOptions" style="margin-top: 10px; display: none">
+              <label
+                >Fill Method:
+                <select id="fillMethod">
+                  <option value="single">Single Value</option>
+                  <option value="multiple">Multiple Values</option>
+                  <option value="columnStats">Column Statistics</option>
+                </select>
+              </label>
+
+              <div id="singleValueOption" style="margin-top: 10px">
+                <label
+                  >Value:
+                  <input type="text" id="fillValue" placeholder="Enter value"
+                /></label>
+              </div>
+
+              <div
+                id="multipleValuesOption"
+                style="margin-top: 10px; display: none"
+              >
+                <div id="columnValuePairs">
+                  <div class="column-value-pair">
+                    <select class="fill-column-select">
+                      <option value="">Select Column</option>
+                    </select>
+                    <input
+                      type="text"
+                      class="fill-value-input"
+                      placeholder="Value to fill"
+                    />
+                    <button class="remove-pair-btn">×</button>
+                  </div>
+                </div>
+                <button id="addMoreColumnsBtn" style="margin-top: 10px">
+                  + Add Another Column
+                </button>
+              </div>
+
+              <div
+                id="columnStatsOption"
+                style="margin-top: 10px; display: none"
+              >
+                <label
+                  >Column:
+                  <select id="statsColumn"></select
+                ></label>
+                <label
+                  >Statistic:
+                  <select id="statisticType">
+                    <option value="mean">Mean</option>
+                    <option value="median">Median</option>
+                    <option value="mode">Mode</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <button id="applyCleanBtn" style="margin-top: 15px">Apply</button>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Fix Wrong Format Data</h3>
+          <div class="operation-options">
+            <label
+              >Column:
+              <select id="formatColumn"></select
+            ></label>
+            <label
+              >Convert to:
+              <select id="targetFormat">
+                <option value="string">Text</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="boolean">True/False</option>
+              </select>
+            </label>
+            <div id="dateFormatOptions" style="margin-top: 10px; display: none">
+              <label
+                >Date Format:
+                <select id="dateFormat">
+                  <option value="iso">ISO (YYYY-MM-DD)</option>
+                  <option value="us">US (MM/DD/YYYY)</option>
+                  <option value="european">European (DD/MM/YYYY)</option>
+                </select>
+              </label>
+            </div>
+            <button id="applyFormatBtn" style="margin-top: 10px">
+              Convert Format
+            </button>
+            <div id="formatResult"></div>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Text Processing</h3>
+          <div class="operation-options">
+            <label
+              >Column:
+              <select id="textColumn"></select
+            ></label>
+
+            <div class="text-processing-options">
+              <label>
+                <input type="checkbox" id="removeSpaces" /> Remove extra spaces
+              </label>
+              <label>
+                <input type="checkbox" id="removeSpecialChars" /> Remove special
+                characters
+              </label>
+
+              <label
+                >Text Case:
+                <select id="textCase">
+                  <option value="none">No change</option>
+                  <option value="lower">lowercase</option>
+                  <option value="upper">UPPERCASE</option>
+                  <option value="title">Title Case</option>
+                  <option value="sentence">Sentence case</option>
+                </select>
+              </label>
+            </div>
+
+            <button id="applyTextProcessingBtn" style="margin-top: 10px">
+              Process Text
+            </button>
+            <div id="textProcessingResult"></div>
+          </div>
+        </div>
+
+        <div class="operation-group">
+          <h3>Column Operations</h3>
+          <div class="operation-options">
+            <label
+              >Operation:
+              <select id="columnOperation">
+                <option value="split">Split Column</option>
+                <option value="merge">Merge Columns</option>
+              </select>
+            </label>
+
+            <div id="splitOptions">
+              <label
+                >Column to Split:
+                <select id="splitColumn"></select
+              ></label>
+              <label
+                >Separator:
+                <input
+                  type="text"
+                  id="splitSeparator"
+                  placeholder="e.g., comma, space"
+              /></label>
+
+              <div id="newColumnsContainer">
+                <!-- Initial 2 inputs will be added by JavaScript -->
+              </div>
+              <button id="addMoreSplitColumnsBtn" style="margin-top: 5px">
+                + Add Another Column
+              </button>
+            </div>
+
+            <div id="mergeOptions" style="display: none">
+              <label
+                >Columns to Merge:
+                <select id="mergeColumns" multiple style="height: auto">
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </label>
+              <label
+                >New Column Name:
+                <input
+                  type="text"
+                  id="mergedColumnName"
+                  placeholder="New column name"
+              /></label>
+              <label
+                >Separator:
+                <input
+                  type="text"
+                  id="mergeSeparator"
+                  placeholder="e.g., space, hyphen"
+              /></label>
+            </div>
+
+            <button id="applyColumnOpBtn" style="margin-top: 10px">
+              Apply Operation
+            </button>
+            <div id="columnOpResult"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/fileHandler.js"></script>
+    <script src="js/dataVisualizer.js"></script>
+    <script src="js/duplicateHandler.js"></script>
+    <script src="js/emptyCellHandler.js"></script>
+    <script src="js/formatHandler.js"></script>
+    <script src="js/textHandler.js"></script>
+    <script src="js/columnHandler.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
